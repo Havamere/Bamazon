@@ -1,0 +1,29 @@
+{
+  "name": "bamazon_app",
+  "version": "1.0.0",
+  "description": "like amazon.com",
+  "main": "BamazonCustomer.js",
+  "dependencies": {
+    "mysql": "^2.11.1",
+    "inquirer": "^1.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/havamere/bamazon.git"
+  },
+  "keywords": [
+    "javascript",
+    "node.js",
+    "mysql"
+  ],
+  "author": "Kyle Rinehart",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/havamere/bamazon/issues"
+  },
+  "homepage": "https://github.com/havamere/bamazon#readme"
+}
