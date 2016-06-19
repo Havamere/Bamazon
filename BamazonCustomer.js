@@ -62,7 +62,8 @@ var purchase = function(){
  	}
 
  	]).then(function(user){
- 		connection.query('SELECT * FROM Products WHERE ProductName = ?', user.product, function(err,res){
+ 		connection.query('SELECT * FROM products INNER JOIN departments ON (products.DepartmentName=departments.DepartmentName)'+
+ 						' WHERE products.ProductName = ?', user.product, function(err,res){
  			if (err) throw err;
  			//checks to see if enough products are in stock
  			if (user.amount > (res[0].StockQuantity - user.amount)) {
@@ -71,11 +72,12 @@ var purchase = function(){
  				purchase();
  			} else {
  				//shows user what they purchased, how many, and at what price
- 				console.log('You have ordered '+user.amount+' '+user.product+' at $'+res[0].Price);
+ 				console.log('You have ordered '+user.amount+' '+user.product+'(s) at $'+res[0].Price);
  				//gives user the total amount of purchase
  				console.log('Your total cost is $'+(res[0].Price*user.amount));
  				//updates database
  				connection.query('UPDATE Products SET StockQuantity = "'+(res[0].StockQuantity - user.amount)+'" WHERE ProductName = "'+user.product+'"');
+ 				connection.query('UPDATE Departments SET TotalSales = "'+(res[0].TotalSales + (res[0].Price*user.amount))+'" WHERE DepartmentsName = "'+res[0].DepartmentName+'"')
  			}
  		});
  	});

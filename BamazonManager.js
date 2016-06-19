@@ -49,7 +49,9 @@ var manage = function() {
 		})
 }
 
-var productList = []
+var productList = [];
+
+var departmentList = [];
 
 var checkInventory = function(){
 	connection.query('SELECT * FROM products', function(err, res){
@@ -112,6 +114,7 @@ var restock = function(){
 			connection.query('UPDATE Products SET StockQuantity = "'+(Number(user.restock_amount)+Number(res[0].StockQuantity))+'" WHERE ProductName = "'+user.restock_item+'"');
 			console.log("Inventory Updated.")
 			connection.query('SELECT * FROM products WHERE ProductName = "'+user.restock_item+'"', function(err, res){
+				if (err) throw err;
 				console.log('Product ID: '+res[0].ItemID+" | "+res[0].ProductName+" | $"+res[0].Price+" | Instock Quantity: "+res[0].StockQuantity+" | Department: "+res[0].DepartmentName);
 				manage();
 			});
@@ -120,6 +123,12 @@ var restock = function(){
 };
 
 var addNewProduct = function(){
+	connection.query('SELECT * FROM products', function(err, res){
+		if (err) throw err;
+		for (var i = 0; i < res.length; i++){
+			//Builds selectable list for purchase prompt
+			departmentList.push(res[i].DepartmentName);
+		};
 	inquirer.prompt([
 			{
 				type: 'input',
@@ -132,9 +141,10 @@ var addNewProduct = function(){
 				message: 'Please input the Product Name.'
 			},
 			{
-				type: 'input',
+				type: 'list',
 				name: 'DepartmentName',
-				message: 'Please input the Department this item falls under.'
+				message: 'Please select the Department this item falls under.',
+				choices: departmentList
 			},
 			{
 				type: 'input',
