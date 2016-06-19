@@ -34,9 +34,31 @@ connection.query('SELECT * FROM products ORDER BY products.ItemID', function(err
 	}
 	console.log("--------------------------------------------------------------");
 	// console.log(productList);
-	//runs purchase program AFTER item list console.logs
-	purchase().then(disconnect());
+	//AFTER item list console.logs, user is prompted whether they want to buy something or end program
+	customerChoice();
 });
+
+var customerChoice = function(){
+	inquirer.prompt({
+			type: 'list',
+			name: 'options',
+			message: 'Hello, what would you like to do?',
+			choices: ['View Products for Sale','Quit Program']
+		}).then(function(user){
+			switch (user.options){
+				case 'View Products for Sale':
+					purchase();
+				break;
+
+				case 'Quit Program':
+					connection.end();
+				break;
+
+				default:
+					console.log("You broke it!");
+			};
+		});
+};
 
 var purchase = function(){
 	inquirer.prompt([
@@ -81,6 +103,7 @@ var purchase = function(){
  				connection.query('UPDATE products SET StockQuantity = "'+(res[0].StockQuantity - user.amount)+'" WHERE ProductName = "'+user.product+'"');
  				connection.query('UPDATE departments SET TotalSales = "'+(res[0].TotalSales + (res[0].Price*user.amount))+'" WHERE DepartmentName = "'+res[0].DepartmentName+'"')
  			}
+ 			customerChoice();
  		});
  	});
  }
