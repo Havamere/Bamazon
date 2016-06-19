@@ -34,6 +34,8 @@ connection.query('SELECT * FROM products', function(err, res){
 	// console.log(productList);
 	//runs purchase program AFTER item list console.logs
 	purchase();
+	//ends connection to allow new program to be run
+	//connection.end();
 });
 
 var purchase = function(){
@@ -76,7 +78,5 @@ var purchase = function(){
  				connection.query('UPDATE Products SET StockQuantity = "'+(res[0].StockQuantity - user.amount)+'" WHERE ProductName = "'+user.product+'"');
  			}
  		});
-		//ends connection to allow new program to be run
-		connection.end();
  	});
  }
