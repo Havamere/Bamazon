@@ -27,15 +27,15 @@ var executiveStuff = function(){
 			choices: ['View Product Sales By Department', 'Create New Department']
 		}).then(function(user){
 			switch (user.options) {
-				case 'View Product Sales By Department';
+				case 'View Product Sales By Department':
 					viewSales();
 				break;
 
-				case 'Create New Department';
+				case 'Create New Department':
 					makeNewDepartment();
 				break;
 
-				default;
+				default:
 					console.log('You broke it.')
 
 			}
@@ -43,12 +43,21 @@ var executiveStuff = function(){
 };
 
 var viewSales = function(){
-	connection.query('SELECT *, DIFFERENCE(TotalSales-OverHeadCosts) TotalProfit FROM departments', function(err, res){
+	connection.query('SELECT *, (TotalSales-OverHeadCosts) TotalProfit FROM departments', function(err, res){
 		if (err) throw err;
-		console.log('Here is the sales mix for the company.');
-		console.log('--------------------------------------------------------------------------------------');
-		console.log(res);
-		for (var i = 0; i < res.length; i++){};
+		console.log('-------------------Here is the sales mix for the company.-------------------');
+		console.log('----------------------------------------------------------------------------');
+		console.log('| DepartmentID | DepartmentName | OverHeadCosts | TotalSales | TotalProfit |');
+		console.log('----------------------------------------------------------------------------');
+		// console.log(res);
+		for (var i = 0; i < res.length; i++){
+			console.log('| '+' '+' '+' '+' '+' '+' '+res[i].DepartmentID+' '+' '+' '+' '+' '+' | '+
+						' '+' '+res[i].DepartmentName+' '+' '+' | '+' '+' '+' '+' '+res[i].OverHeadCosts+
+						' '+' '+' '+' | '+' '+' '+res[i].TotalSales+' '+' '+' | '+' '+' '+' '+
+						res[i].TotalProfit+' '+' '+' |');
+			console.log('----------------------------------------------------------------------------');
+		};
+		//executiveStuff();
 	});
 };
 
@@ -96,11 +105,25 @@ var makeNewDepartment = function(){
 			connection.query('INSERT INTO products SET ?', newProduct, function(err, res){
 				if (err) throw err;
 				checkInventory();
-				//manage();
 			});
 			connection.query('INSERT INTO departments SET ?', newDepartment, function(err, res){
 				if (err) throw err;
 				viewSales();
-				//manage();
-			})
-		})
+			});
+			//executiveStuff();
+		});
+	});
+};
+
+var checkInventory = function(){
+	connection.query('SELECT * FROM products', function(err, res){
+		if (err) throw err;
+		//making it look pretty
+		console.log("\n Bamazon.com Inventory Workup");
+		console.log("---------------------------------------------------------------------------------------------------");
+		for (var i = 0; i < res.length; i++){
+			console.log('Product ID: '+res[i].ItemID+" | "+res[i].ProductName+" | $"+res[i].Price+" | Instock Quantity: "+res[i].StockQuantity+" | Department: "+res[i].DepartmentName);
+		}
+		console.log("---------------------------------------------------------------------------------------------------");
+		});
+};
