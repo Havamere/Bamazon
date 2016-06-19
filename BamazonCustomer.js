@@ -51,7 +51,7 @@ var purchase = function(){
  		message: 'And how many would you like to purchase?',
  		//makes sure an actual number was entered
  		validate: function(value) {
- 			if (isNaN(value) == true) {
+ 			if (isNaN(value) == true || value == null) {
  				console.log('Please enter a valid number');
  				return false;
  			}
@@ -62,15 +62,21 @@ var purchase = function(){
  	]).then(function(user){
  		connection.query('SELECT * FROM Products WHERE ProductName = ?', user.product, function(err,res){
  			if (err) throw err;
+ 			//checks to see if enough products are in stock
  			if (user.amount > (res[0].StockQuantity - user.amount)) {
  				console.log('Insufficient quantity.  Please select less to buy.')
+ 				//re-runs the program so that the user can try again
  				purchase();
  			} else {
+ 				//shows user what they purchased, how many, and at what price
  				console.log('You have ordered '+user.amount+' '+user.product+' at $'+res[0].Price);
+ 				//gives user the total amount of purchase
  				console.log('Your total cost is $'+(res[0].Price*user.amount));
+ 				//updates database
  				connection.query('UPDATE Products SET StockQuantity = "'+(res[0].StockQuantity - user.amount)+'" WHERE ProductName = "'+user.product+'"');
  			}
-			connection.end();
  		});
+		//ends connection to allow new program to be run
+		connection.end();
  	});
  }
