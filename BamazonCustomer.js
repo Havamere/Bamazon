@@ -17,7 +17,7 @@ connection.connect(function (err){
 	//sends error message to console if one exists
 	if (err) throw err;
 	//logs success upon success
-	console.log('Connnection Established');
+	console.log('Connnection Established...');
 });
 
 connection.query('SELECT * FROM products', function(err, res){
