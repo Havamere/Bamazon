@@ -2,7 +2,7 @@
 var inquirer = require("inquirer");
 //makes use of mysql npm
 var mysql = require("mysql");
-
+//makes connection to database
 var connection = mysql.createConnection({
 	host : 'LocalHost',
 	port: 3306,
@@ -24,7 +24,7 @@ var executiveStuff = function(){
 		type: 'list',
 			name: 'options',
 			message: 'Hello, what would you like to do?',
-			choices: ['View Product Sales By Department', 'Create New Department']
+			choices: ['View Product Sales By Department', 'Create New Department','Quit Program']
 		}).then(function(user){
 			switch (user.options) {
 				case 'View Product Sales By Department':
@@ -35,6 +35,10 @@ var executiveStuff = function(){
 					makeNewDepartment();
 				break;
 
+				case 'Quit Program':
+					connection.end();
+				break;
+
 				default:
 					console.log('You broke it.')
 
@@ -43,7 +47,7 @@ var executiveStuff = function(){
 };
 
 var viewSales = function(){
-	connection.query('SELECT *, (TotalSales-OverHeadCosts) TotalProfit FROM departments', function(err, res){
+	connection.query('SELECT *, (TotalSales-OverHeadCosts) TotalProfit FROM departments ORDER BY departments.DepartmentID', function(err, res){
 		if (err) throw err;
 		console.log('-------------------Here is the sales mix for the company.-------------------');
 		console.log('----------------------------------------------------------------------------');
@@ -57,7 +61,8 @@ var viewSales = function(){
 						res[i].TotalProfit+' '+' '+' |');
 			console.log('----------------------------------------------------------------------------');
 		};
-		//executiveStuff();
+		//Keeps program running
+		executiveStuff();
 	});
 };
 
@@ -104,19 +109,22 @@ var makeNewDepartment = function(){
 			var newDepartment = {DepartmentName: user.DepartmentName, OverHeadCosts: user.OverHeadCosts, TotalSales: user.TotalSales};
 			connection.query('INSERT INTO products SET ?', newProduct, function(err, res){
 				if (err) throw err;
+				//shows updated inventory report
 				checkInventory();
 			});
 			connection.query('INSERT INTO departments SET ?', newDepartment, function(err, res){
 				if (err) throw err;
+				//shows updated Department view
 				viewSales();
 			});
-			//executiveStuff();
+			//Keeps program running
+			executiveStuff();
 		});
 	});
 };
 
 var checkInventory = function(){
-	connection.query('SELECT * FROM products', function(err, res){
+	connection.query('SELECT * FROM products ORDER BY products.ItemID', function(err, res){
 		if (err) throw err;
 		//making it look pretty
 		console.log("\n Bamazon.com Inventory Workup");

@@ -2,7 +2,7 @@
 var inquirer = require("inquirer");
 //makes use of mysql npm
 var mysql = require("mysql");
-
+//makes connection to database
 var connection = mysql.createConnection({
 	host : 'LocalHost',
 	port: 3306,
@@ -11,6 +11,7 @@ var connection = mysql.createConnection({
 	database : 'bamazon_db'
 });
 
+//used to build scrollable list in inquirer prompt
 var productList = [];
 
 connection.connect(function (err){
@@ -20,7 +21,8 @@ connection.connect(function (err){
 	console.log('Connnection Established...');
 });
 
-connection.query('SELECT * FROM products', function(err, res){
+connection.query('SELECT * FROM products ORDER BY products.ItemID', function(err, res){
+	//logs out error if present
 	if (err) throw err;
 	//making it look pretty
 	console.log("Welcome to Bamazon.com.  What would you like to buy today?")
@@ -33,9 +35,7 @@ connection.query('SELECT * FROM products', function(err, res){
 	console.log("--------------------------------------------------------------");
 	// console.log(productList);
 	//runs purchase program AFTER item list console.logs
-	purchase();
-	//ends connection to allow new program to be run
-	//connection.end();
+	purchase().then(disconnect());
 });
 
 var purchase = function(){
@@ -62,23 +62,40 @@ var purchase = function(){
  	}
 
  	]).then(function(user){
+ 		//builds data object containing all info from both databases and joins the 2 instances that are the same, the DepartmentName 
  		connection.query('SELECT * FROM products INNER JOIN departments ON (products.DepartmentName=departments.DepartmentName)'+
- 						' WHERE products.ProductName = ?', user.product, function(err,res){
+ 						' WHERE (products.ProductName = ?)', user.product, function(err,res){
  			if (err) throw err;
  			//checks to see if enough products are in stock
+ 			//console.log(res);
  			if (user.amount > (res[0].StockQuantity - user.amount)) {
- 				console.log('Insufficient quantity.  Please select less to buy.')
+ 				console.log('Insufficient quantity.  Please select less to buy.\n')
  				//re-runs the program so that the user can try again
  				purchase();
  			} else {
  				//shows user what they purchased, how many, and at what price
- 				console.log('You have ordered '+user.amount+' '+user.product+'(s) at $'+res[0].Price);
+ 				console.log('You have ordered '+user.amount+' '+user.product+'(s) at $'+res[0].Price+'\n');
  				//gives user the total amount of purchase
- 				console.log('Your total cost is $'+(res[0].Price*user.amount));
- 				//updates database
- 				connection.query('UPDATE Products SET StockQuantity = "'+(res[0].StockQuantity - user.amount)+'" WHERE ProductName = "'+user.product+'"');
- 				connection.query('UPDATE Departments SET TotalSales = "'+(res[0].TotalSales + (res[0].Price*user.amount))+'" WHERE DepartmentsName = "'+res[0].DepartmentName+'"')
+ 				console.log('Your total cost is $'+(res[0].Price*user.amount)+'\n');
+ 				//updates databases
+ 				connection.query('UPDATE products SET StockQuantity = "'+(res[0].StockQuantity - user.amount)+'" WHERE ProductName = "'+user.product+'"');
+ 				connection.query('UPDATE departments SET TotalSales = "'+(res[0].TotalSales + (res[0].Price*user.amount))+'" WHERE DepartmentName = "'+res[0].DepartmentName+'"')
  			}
  		});
  	});
  }
+//ends connection to allow new program to be run if user wants
+var disconnect = function(){
+	inquirer.prompt({
+		type: 'list',
+		name: 'quit',
+		message: 'Would you like to quit?',
+		choices:['Yes','No']
+	}).then(function(user){
+		if (user.quit == 'Yes') {
+			connection.end();			
+		} else {
+			purchase();
+		};
+	});
+};
