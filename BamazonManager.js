@@ -127,9 +127,9 @@ var restock = function(){
 			//holds math to account for new inventory amount
 			var updateStock = (user.restock_amount-"") + (res[0].StockQuantity-"");
 			//console.log(updateStock);
-			console.log('Product ID: '+res[0].ItemID+" | "+res[0].ProductName+" | $"+res[0].Price+" | Instock Quantity: "+res[0].StockQuantity+" | Department: "+res[0].DepartmentName);
 			//updates stock quantity in database
 			connection.query('UPDATE Products SET StockQuantity = "'+(updateStock)+'" WHERE ProductName = "'+user.restock_item+'"');
+			console.log('Product ID: '+res[0].ItemID+" | "+res[0].ProductName+" | $"+res[0].Price+" | Instock Quantity: "+updateStock+" | Department: "+res[0].DepartmentName);
 			console.log("Inventory Updated.")
 			//Keeps program running
 			manage();
