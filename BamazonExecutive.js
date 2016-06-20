@@ -72,37 +72,86 @@ var makeNewDepartment = function(){
 			{
 				type: 'input',
 				name: 'ItemID',
-				message: 'Please input a unique ItemID.'
+				message: 'Please input a unique ItemID.',
+				validate: function(value) {
+	 			if (isNaN(value) == true || value == null || value == undefined ||value == '') {
+	 				console.log('Please enter a valid number');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 			{
 				type: 'input',
 				name: 'ProductName',
-				message: 'Please input the Product Name.'
+				message: 'Please input the Product Name.',
+				validate: function(value) {
+	 			if (value == undefined || value == null || value == '') {
+	 				console.log('Please enter a valid Product Name');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 			{
 				type: 'input',
 				name: 'DepartmentName',
 				message: 'Please input the Department name.',
+				validate: function(value) {
+	 			if (value == undefined || value == null || value == '') {
+	 				console.log('Please enter a valid Department Name');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 			{
 				type: 'input',
 				name: 'Price',
-				message: 'Please input the items Price.'
+				message: 'Please input the items Price.',
+				validate: function(value) {
+	 			if (isNaN(value) == true || value == null || value == undefined ||value == '') {
+	 				console.log('Please enter a valid number');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 			{
 				type: 'input',
 				name: 'StockQuantity',
-				message: 'Please input the amount of this item you want to put into Stock.'
+				message: 'Please input the amount of this item you want to put into Stock.',
+				validate: function(value) {
+	 			if (isNaN(value) == true || value == null || value == undefined ||value == '') {
+	 				console.log('Please enter a valid number');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 			{
 				type: 'input',
 				name: 'OverHeadCosts',
-				message: 'Please input the over head costs of this department.'
+				message: 'Please input the over head costs of this department.',
+				validate: function(value) {
+	 			if (isNaN(value) == true || value == null || value == undefined ||value == '') {
+	 				console.log('Please enter a valid number');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 			{
 				type: 'input',
 				name: 'TotalSales',
-				message: 'Please input the current total sales amount for this department.'
+				message: 'Please input the current total sales amount for this department.',
+				validate: function(value) {
+	 			if (isNaN(value) == true || value == null || value == undefined ||value == '') {
+	 				console.log('Please enter a valid number');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 		]).then(function(user){
 			var newProduct = {ItemID: user.ItemID, ProductName: user.ProductName, DepartmentName: user.DepartmentName, Price: user.Price, StockQuantity: user.StockQuantity};

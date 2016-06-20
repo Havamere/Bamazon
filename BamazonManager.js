@@ -111,7 +111,7 @@ var restock = function(){
 			message: '\n And how much are you adding to stock?',
 			//makes sure an actual number was entered
  			validate: function(value) {
-	 			if (isNaN(value) == true || value == null) {
+	 			if (isNaN(value) == true || value == null || value == undefined ||value == '') {
 	 				console.log('Please enter a valid number');
 	 				return false;
 	 			};
@@ -120,7 +120,7 @@ var restock = function(){
 		}	
 	]).then(function(user){
 		connection.query('SELECT * FROM products WHERE ProductName = "'+user.restock_item+'"', function(err, res){
-		console.log(res);
+		//console.log(res);
 			if (err) throw err;
 			//console.log(user.restock_amount);
 			//console.log(res[0].StockQuantity);
@@ -148,12 +148,26 @@ var addNewProduct = function(){
 			{
 				type: 'input',
 				name: 'ItemID',
-				message: 'Please input a unique ItemID.'
+				message: 'Please input a unique ItemID.',
+				validate: function(value) {
+	 			if (isNaN(value) == true || value == null || value == undefined ||value == '') {
+	 				console.log('Please enter a valid number');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 			{
 				type: 'input',
 				name: 'ProductName',
-				message: 'Please input the Product Name.'
+				message: 'Please input the Product Name.',
+				validate: function(value) {
+	 			if (value == undefined || value == null || value == '') {
+	 				console.log('Please enter a valid Product Name');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 			{
 				type: 'list',
@@ -164,12 +178,26 @@ var addNewProduct = function(){
 			{
 				type: 'input',
 				name: 'Price',
-				message: 'Please input the items Price.'
+				message: 'Please input the items Price.',
+				validate: function(value) {
+	 			if (isNaN(value) == true || value == null || value == undefined ||value == '') {
+	 				console.log('Please enter a valid number');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 			{
 				type: 'input',
 				name: 'StockQuantity',
-				message: 'Please input the amount of this item you want to put into Stock.'
+				message: 'Please input the amount of this item you want to put into Stock.',
+				validate: function(value) {
+	 			if (isNaN(value) == true || value == null || value == undefined ||value == '') {
+	 				console.log('Please enter a valid number');
+	 				return false;
+	 			};
+	 			return true;
+	 			}
 			},
 		]).then(function(user){
 			var newProduct = {ItemID: user.ItemID, ProductName: user.ProductName, DepartmentName: user.DepartmentName, Price: user.Price, StockQuantity: user.StockQuantity}
