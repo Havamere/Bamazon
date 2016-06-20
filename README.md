@@ -8,3 +8,5 @@ BamazonManager.js allows the user to view current inventory stock, get Low inven
 BamazonExecutive.js allows the user to view overall department sales and add new department catagories and items.  It also builds a report to include a total profit catagory that doesn't actually exist in the department table.
 
 This video file will play in any web browser with a simple drag and drop into the browser.
+
+https://www.dropbox.com/s/esg63izjfqkft82/BamazonByKyleR.webm?dl=0
